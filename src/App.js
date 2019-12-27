@@ -1,26 +1,47 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
+import ValidationComponent from './ValidationComponent/ValidationComponent'
+import CharComponent from './CharComponent/CharComponent'
 
-function App() {
+const App = (props) => {
+  const [inputTextState, setInputTextState] = useState({text: "", length: 0})
+
+  const inputTextHandler = (event) => {
+      setInputTextState({
+        text: event.target.value,
+        length: event.target.value.length
+      })
+  }
+
+  const deleteCharHandler = (index) => {
+
+    const charsArr = inputTextState.text.split('')
+    charsArr.splice(index, 1)
+    const newChars = charsArr.join('')
+    
+    setInputTextState({
+      text: newChars,
+      length: newChars.length
+    })
+  }
+
+ 
+  const chars = inputTextState.text.split('').map((char, index) => {
+      return <CharComponent 
+        char={char}
+        click={() => deleteCharHandler(index)}
+        key={index} />
+  })
+  
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input onChange={(event) => inputTextHandler(event)}/>
+      <p onChange={inputTextHandler}>{inputTextState.length}</p>
+      <ValidationComponent length={inputTextState.length} />
+      {chars}
     </div>
-  );
+  )
 }
 
 export default App;
